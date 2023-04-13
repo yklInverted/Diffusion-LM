@@ -314,6 +314,29 @@ def get_corpus_rocstory(data_args, model, image_size, padding_mode='block',
     from spacy.lang.en import English
 
     if data_args.experiment_mode == 'lm':
+        
+        import ipdb
+        if data_args.modality == 'roc':
+            print('loading dataset from ROCStory')
+            nlp = English()
+            tokenizer = nlp.tokenizer
+            sentence_lst = []
+            file = open('/home/honglanqing/hushoukang/lky/NLP/data/text8.txt','r')
+            if split == 'train':
+                data = file.readline()[:1000000]
+            elif split == 'valid':
+                data = file.readline()[1000000:1100000]
+            else:
+                raise Exception('Invalid Split Setting!')
+            
+            seq_len = 128
+            for i in range(0, len(data)//seq_len):
+                sent = data[i*seq_len: (i+1)*seq_len].strip()
+                word_lst = [x.text for x in tokenizer(sent)]
+                sentence_lst.append(word_lst[:-1])
+            #ipdb.set_trace()
+                
+        '''
         if data_args.modality == 'roc':
             print('loading dataset from ROCStory')
             nlp = English()
@@ -334,7 +357,7 @@ def get_corpus_rocstory(data_args, model, image_size, padding_mode='block',
                     sentences = json.loads(row)[0].strip()
                     word_lst = [x.text for x in tokenizer(sentences)]
                     sentence_lst.append(word_lst)
-
+        '''
             # with open(data_args.roc_train, 'r') as csvfile:
             #     roc_reader = csv.reader(csvfile) #delimiter=' ', quotechar='|')
             #     for row in roc_reader:
@@ -343,7 +366,7 @@ def get_corpus_rocstory(data_args, model, image_size, padding_mode='block',
             #         word_lst = [x.text for x in tokenizer(sentences)]
             #         sentence_lst.append(word_lst)
             # sentence_lst = sentence_lst[1:]
-            print(sentence_lst[:2])
+            #print(sentence_lst[:2])
         if data_args.modality == 'roc-aug':
             print('loading dataset from ROCStory')
             nlp = English()
